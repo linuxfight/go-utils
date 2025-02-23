@@ -1,4 +1,4 @@
-module recoverer
+module github.com/linuxfight/middlewares/recoverer
 
 go 1.23.4
 

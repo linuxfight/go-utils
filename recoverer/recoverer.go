@@ -1,4 +1,4 @@
-package recoverer
+package github.com/linuxfight/middlewares/recoverer
 
 import "github.com/gofiber/fiber/v3"
 

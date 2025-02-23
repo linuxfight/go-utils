@@ -1,4 +1,4 @@
-package recoverer
+package github.com/linuxfight/middlewares/recoverer
 
 import (
 	"net/http/httptest"

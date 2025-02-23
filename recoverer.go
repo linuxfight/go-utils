@@ -2,7 +2,7 @@ package middlewares
 
 import "github.com/gofiber/fiber/v3"
 
-func Recovery() fiber.Handler {
+func NewRecovery() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		defer func() {
 			if err := recover(); err != nil {

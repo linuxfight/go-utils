@@ -3,20 +3,20 @@ package middlewares
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/adaptor"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 
-	"github.com/go-openapi/runtime/middleware"
-	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/adaptor"
 	"gopkg.in/yaml.v2"
+	"log"
 )
 
-// Config defines the config for middleware.
-type Config struct {
+// SwaggerConfig defines the config for middleware.
+type SwaggerConfig struct {
 	// Next defines a function to skip this middleware when returned true.
 	//
 	// Optional. Default: nil
@@ -55,7 +55,7 @@ type Config struct {
 }
 
 // ConfigDefault is the default config
-var ConfigDefault = Config{
+var ConfigDefault = SwaggerConfig{
 	Next:     nil,
 	BasePath: "/",
 	FilePath: "./swagger.json",
@@ -64,8 +64,8 @@ var ConfigDefault = Config{
 	CacheAge: 3600, // Default to 1 hour
 }
 
-// New creates a new middleware handler
-func New(config ...Config) fiber.Handler {
+// NewSwagger creates a new middleware handler
+func NewSwagger(config ...SwaggerConfig) fiber.Handler {
 	// Set default config
 	cfg := ConfigDefault
 

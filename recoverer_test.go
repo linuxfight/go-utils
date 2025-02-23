@@ -17,7 +17,7 @@ func Test_Recovery(t *testing.T) {
 		},
 	})
 
-	app.Use(Recovery())
+	app.Use(NewRecovery())
 
 	app.Get("/panic", func(_ fiber.Ctx) error {
 		panic("Hi, I'm an error!")

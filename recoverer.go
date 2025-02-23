@@ -1,4 +1,4 @@
-package recoverer
+package middlewares
 
 import "github.com/gofiber/fiber/v3"
 

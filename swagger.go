@@ -1,4 +1,4 @@
-package swagger
+package middlewares
 
 import (
 	"encoding/json"
@@ -103,7 +103,6 @@ func New(config ...Config) fiber.Handler {
 		rawSpec, err = os.ReadFile(cfg.FilePath)
 		if err != nil {
 			log.Fatalf("Failed to read provided Swagger file (%s): %v", cfg.FilePath, err.Error())
-			panic(err)
 		}
 	}
 
@@ -115,10 +114,6 @@ func New(config ...Config) fiber.Handler {
 
 	if errJSON != nil && errYAML != nil {
 		log.Fatalf("Failed to parse the Swagger spec as JSON or YAML: JSON error: %s, YAML error: %s", errJSON, errYAML)
-		if len(cfg.FileContent) != 0 {
-			panic(fmt.Errorf("Invalid Swagger spec: %s", string(rawSpec)))
-		}
-		panic(fmt.Errorf("Invalid Swagger spec file: %s", cfg.FilePath))
 	}
 
 	// Generate URL path's for the middleware

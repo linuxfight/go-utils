@@ -1,4 +1,4 @@
-package recoverer
+package middlewares
 
 import (
 	"net/http/httptest"

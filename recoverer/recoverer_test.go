@@ -1,4 +1,4 @@
-package middlewares
+package recoverer
 
 import (
 	"net/http/httptest"
@@ -17,7 +17,7 @@ func Test_Recovery(t *testing.T) {
 		},
 	})
 
-	app.Use(NewRecovery())
+	app.Use(New())
 
 	app.Get("/panic", func(_ fiber.Ctx) error {
 		panic("Hi, I'm an error!")

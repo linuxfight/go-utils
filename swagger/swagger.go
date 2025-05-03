@@ -1,4 +1,4 @@
-package middlewares
+package swagger
 
 import (
 	"encoding/json"
@@ -15,8 +15,8 @@ import (
 	"log"
 )
 
-// SwaggerConfig defines the config for middleware.
-type SwaggerConfig struct {
+// Config defines the config for middleware.
+type Config struct {
 	// Next defines a function to skip this middleware when returned true.
 	//
 	// Optional. Default: nil
@@ -55,7 +55,7 @@ type SwaggerConfig struct {
 }
 
 // ConfigDefault is the default config
-var ConfigDefault = SwaggerConfig{
+var ConfigDefault = Config{
 	Next:     nil,
 	BasePath: "/",
 	FilePath: "./swagger.json",
@@ -64,8 +64,8 @@ var ConfigDefault = SwaggerConfig{
 	CacheAge: 3600, // Default to 1 hour
 }
 
-// NewSwagger creates a new middleware handler
-func NewSwagger(config ...SwaggerConfig) fiber.Handler {
+// New creates a new middleware handler
+func New(config ...Config) fiber.Handler {
 	// Set default config
 	cfg := ConfigDefault
 

@@ -1,4 +1,4 @@
-package middlewares
+package swagger
 
 import (
 	_ "embed"
@@ -27,10 +27,10 @@ func TestNew(t *testing.T) {
 	t.Run("Endpoint check with only custom path", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			Path: "custompath",
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/custompath", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -45,10 +45,10 @@ func TestNew(t *testing.T) {
 	t.Run("Endpoint check with only custom basepath", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath: "/api/v1",
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/api/v1/docs", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -63,11 +63,11 @@ func TestNew(t *testing.T) {
 	t.Run("Endpoint check with custom config", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath: "/",
 			FilePath: "swagger.json",
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/docs", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -82,12 +82,12 @@ func TestNew(t *testing.T) {
 	t.Run("Endpoint check with custom path", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath: "/",
 			FilePath: "swagger.json",
 			Path:     "swagger",
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/swagger", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -102,11 +102,11 @@ func TestNew(t *testing.T) {
 	t.Run("Endpoint check with custom config and yaml spec", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath: "/",
 			FilePath: "./swagger.yaml",
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/docs", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -121,12 +121,12 @@ func TestNew(t *testing.T) {
 	t.Run("Endpoint check with custom path and yaml spec", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath: "/",
 			FilePath: "swagger.yaml",
 			Path:     "swagger",
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/swagger", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -141,9 +141,9 @@ func TestNew(t *testing.T) {
 	t.Run("Endpoint check with empty custom config", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{}
+		cfg := Config{}
 
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/docs", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -158,7 +158,7 @@ func TestNew(t *testing.T) {
 	t.Run("Endpoint check with default config", func(t *testing.T) {
 		app := fiber.New()
 
-		app.Use(NewSwagger())
+		app.Use(New())
 
 		w1 := performRequest("GET", "/docs", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -173,35 +173,35 @@ func TestNew(t *testing.T) {
 	t.Run("Swagger.json file is not exist", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			FilePath: "./docs/swagger.json",
 		}
 
 		require.Panics(t, func() {
-			app.Use(NewSwagger(cfg))
+			app.Use(New(cfg))
 		}, "/swagger.json file is not exist")
 	})
 
 	t.Run("Swagger.json missing file", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			FilePath: "./docs/swagger_missing.json",
 		}
 
 		require.Panics(t, func() {
-			app.Use(NewSwagger(cfg))
+			app.Use(New(cfg))
 		}, "invalid character ':' after object key:value pair")
 	})
 
 	t.Run("Endpoint check with multiple Swagger instances", func(t *testing.T) {
 		app := fiber.New()
 
-		app.Use(NewSwagger(SwaggerConfig{
+		app.Use(New(Config{
 			BasePath: "/api/v1",
 		}))
 
-		app.Use(NewSwagger(SwaggerConfig{
+		app.Use(New(Config{
 			BasePath: "/api/v2",
 		}))
 
@@ -224,7 +224,7 @@ func TestNew(t *testing.T) {
 	t.Run("Endpoint check with custom routes", func(t *testing.T) {
 		app := fiber.New()
 
-		app.Use(NewSwagger(SwaggerConfig{
+		app.Use(New(Config{
 			BasePath: "/api/v1",
 		}))
 
@@ -271,12 +271,12 @@ func TestNewWithFileContent(t *testing.T) {
 	t.Run("Endpoint check with only custom path", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			Path:        "custompath",
 			FileContent: swaggerJSON,
 			FilePath:    "doesnotexist-swagger.json",
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/custompath", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -291,12 +291,12 @@ func TestNewWithFileContent(t *testing.T) {
 	t.Run("Endpoint check with only custom basepath", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath:    "/api/v1",
 			FileContent: swaggerJSON,
 			FilePath:    "doesnotexist-swagger.json",
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/api/v1/docs", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -311,12 +311,12 @@ func TestNewWithFileContent(t *testing.T) {
 	t.Run("Endpoint check with custom config", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath:    "/",
 			FilePath:    "doesnotexist-swagger.json",
 			FileContent: swaggerJSON,
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/docs", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -331,13 +331,13 @@ func TestNewWithFileContent(t *testing.T) {
 	t.Run("Endpoint check with custom path", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath:    "/",
 			FilePath:    "doesnotexist-swagger.json",
 			Path:        "swagger",
 			FileContent: swaggerJSON,
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/swagger", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -352,12 +352,12 @@ func TestNewWithFileContent(t *testing.T) {
 	t.Run("Endpoint check with custom config and yaml spec", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath:    "/",
 			FilePath:    "./doesnotexist-swagger.yaml",
 			FileContent: swaggerYAML,
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/docs", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -372,13 +372,13 @@ func TestNewWithFileContent(t *testing.T) {
 	t.Run("Endpoint check with custom path and yaml spec", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			BasePath:    "/",
 			FilePath:    "doesnotexist-swagger.yaml",
 			Path:        "swagger",
 			FileContent: swaggerYAML,
 		}
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/swagger", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -393,12 +393,12 @@ func TestNewWithFileContent(t *testing.T) {
 	t.Run("Endpoint check with empty custom config", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			FileContent: swaggerJSON,
 			FilePath:    "doesnotexist-swagger.json",
 		}
 
-		app.Use(NewSwagger(cfg))
+		app.Use(New(cfg))
 
 		w1 := performRequest("GET", "/docs", app)
 		require.Equal(t, 200, w1.StatusCode)
@@ -413,25 +413,25 @@ func TestNewWithFileContent(t *testing.T) {
 	t.Run("Swagger file content not specified", func(t *testing.T) {
 		app := fiber.New()
 
-		cfg := SwaggerConfig{
+		cfg := Config{
 			FilePath: "./docs/swagger.json",
 		}
 
 		require.Panics(t, func() {
-			app.Use(NewSwagger(cfg))
+			app.Use(New(cfg))
 		}, "content not specified")
 	})
 
 	t.Run("Endpoint check with multiple Swagger instances", func(t *testing.T) {
 		app := fiber.New()
 
-		app.Use(NewSwagger(SwaggerConfig{
+		app.Use(New(Config{
 			BasePath:    "/api/v1",
 			FileContent: swaggerJSON,
 			FilePath:    "doesnotexist-swagger.json",
 		}))
 
-		app.Use(NewSwagger(SwaggerConfig{
+		app.Use(New(Config{
 			BasePath:    "/api/v2",
 			FileContent: swaggerJSON,
 			FilePath:    "doesnotexist-swagger.json",
@@ -456,7 +456,7 @@ func TestNewWithFileContent(t *testing.T) {
 	t.Run("Endpoint check with custom routes", func(t *testing.T) {
 		app := fiber.New()
 
-		app.Use(NewSwagger(SwaggerConfig{
+		app.Use(New(Config{
 			BasePath:    "/api/v1",
 			FileContent: swaggerJSON,
 			FilePath:    "doesnotexist-swagger.json",
